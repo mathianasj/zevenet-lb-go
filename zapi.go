@@ -232,7 +232,7 @@ func (s *ZapiSession) getForEntity(e interface{}, path ...string) error {
 		ContentType: "application/json",
 	}
 
-	log.Printf("[DEBUG] %s", req)
+	log.Printf("[DEBUG] executing %s", req)
 
 	resp, err := s.apiCall(req)
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"log"
 )
 
 // OptionalBool represents an optional boolean having an *undefined/nil* state.
@@ -739,6 +740,8 @@ func (s *ZapiSession) CreateL4XNATBackend(farmName string, backendIP string, bac
 
 	// retrieve status
 	farm, err := s.GetFarm(farmName)
+
+	log.Printf("[DEBUG] got farm %s", farm)
 
 	if err != nil {
 		return nil, err
