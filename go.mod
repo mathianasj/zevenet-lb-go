@@ -1,4 +1,4 @@
-module github.com/konsorten/zevenet-lb-go
+module github.com/mathianasj/zevenet-lb-go
 
 require (
 	github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0
