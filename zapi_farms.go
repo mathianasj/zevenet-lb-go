@@ -67,6 +67,7 @@ type farmDetailsResponse struct {
 	Description string           `json:"description"`
 	Params      FarmDetails      `json:"params"`
 	Services    []ServiceDetails `json:"services"`
+	Backends    []BackendDetails `json:"backends"`
 }
 
 // FarmCiphers is an enumeration of possible selections of *Ciphers* to be used for an https listener.
@@ -230,6 +231,8 @@ func (s *ZapiSession) GetFarm(farmName string) (*FarmDetails, error) {
 				backend.ServiceName = service.ServiceName
 			}
 		}
+
+		result.Params.Backends = result.Backends
 	}
 
 	return &result.Params, nil
