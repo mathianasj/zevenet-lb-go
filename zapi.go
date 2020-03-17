@@ -137,6 +137,8 @@ func (s *ZapiSession) apiCall(options *APIRequest) ([]byte, error) {
 	body := bytes.NewReader([]byte(options.Body))
 	req, _ = http.NewRequest(strings.ToUpper(options.Method), url, body)
 
+	log.Printf("[DEBUG] calling %s", url)
+
 	req.Header.Set("ZAPI_KEY", s.ZapiKey)
 
 	// fmt.Println("REQ -- ", options.Method, " ", url, " -- ", options.Body)

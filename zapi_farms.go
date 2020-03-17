@@ -2,9 +2,9 @@ package zevenetlb
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
-	"log"
 )
 
 // OptionalBool represents an optional boolean having an *undefined/nil* state.
