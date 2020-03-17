@@ -164,7 +164,7 @@ type FarmDetails struct {
 	RewriteLocation          FarmRewriteLocation `json:"rewritelocation"`
 	Status                   FarmStatus          `json:"status"`
 	VirtualIP                string              `json:"vip"`
-	VirtualPort              int                 `json:"vport"`
+	VirtualPort              int                 `json:"vport,string"`
 	Services                 []ServiceDetails    `json:"services"`
 }
 
