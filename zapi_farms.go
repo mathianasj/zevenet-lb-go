@@ -166,6 +166,7 @@ type FarmDetails struct {
 	VirtualIP                string              `json:"vip"`
 	VirtualPort              int                 `json:"vport,string"`
 	Services                 []ServiceDetails    `json:"services"`
+	Backends                 []BackendDetails    `json:"backends"`
 }
 
 // String returns the farm's name and listener.
@@ -458,6 +459,16 @@ func (sd *ServiceDetails) GetBackend(backendID int) (*BackendDetails, error) {
 	return nil, nil
 }
 
+func (fd *FarmDetails) GetBackendByAddress(ipAddress string, port int) (*BackendDetails, error) {
+	for _, s := range fd.Backends {
+		if s.IPAddress == ipAddress && (port <= 0 || s.Port == port) {
+			return &s, nil
+		}
+	}
+
+	return nil, nil
+}
+
 // GetBackendByAddress retrieves a backend by its IP address and port, or returns *nil* if not found. The *port* is optional and can be 0.
 func (sd *ServiceDetails) GetBackendByAddress(ipAddress string, port int) (*BackendDetails, error) {
 	for _, s := range sd.Backends {
@@ -670,6 +681,30 @@ func (s *ZapiSession) CreateBackend(farmName string, serviceName string, backend
 	}
 
 	return service.GetBackendByAddress(backendIP, backendPort)
+}
+
+// CreateBackend creates a new backend on a service on a farm.
+func (s *ZapiSession) CreateL4XNATBackend(farmName string, backendIP string, backendPort int) (*BackendDetails, error) {
+	// create the backend
+	req := backendCreate{
+		IPAddress: backendIP,
+		Port:      backendPort,
+	}
+
+	err := s.post(req, "farms", farmName, "backends")
+
+	if err != nil {
+		return nil, err
+	}
+
+	// retrieve status
+	farm, err := s.GetFarm(farmName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return farm.GetBackendByAddress(backendIP, backendPort)
 }
 
 // UpdateBackend updates a backend on a service on a farm.
