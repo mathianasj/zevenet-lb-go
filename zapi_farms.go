@@ -459,6 +459,17 @@ func (sd *ServiceDetails) GetBackend(backendID int) (*BackendDetails, error) {
 	return nil, nil
 }
 
+// GetBackend retrieves a backend by its ID, or returns *nil* if not found.
+func (sd *FarmDetails) GetBackend(backendID int) (*BackendDetails, error) {
+	for _, s := range sd.Backends {
+		if s.ID == backendID {
+			return &s, nil
+		}
+	}
+
+	return nil, nil
+}
+
 func (fd *FarmDetails) GetBackendByAddress(ipAddress string, port int) (*BackendDetails, error) {
 	for _, s := range fd.Backends {
 		if s.IPAddress == ipAddress && (port <= 0 || s.Port == port) {
@@ -651,6 +662,35 @@ func (s *ZapiSession) DeleteBackend(farmName string, serviceName string, backend
 
 	// delete the backend
 	return true, s.delete("farms", farmName, "services", serviceName, "backends", strconv.Itoa(backendId))
+}
+
+// DeleteBackend will delete an existing backend (or do nothing if backend or service or farm is missing)
+func (s *ZapiSession) DeleteL4XNATBackend(farmName string, backendId int) (bool, error) {
+	// retrieve farm details
+	farm, err := s.GetFarm(farmName)
+
+	if err != nil {
+		return false, err
+	}
+
+	// farm does not exist?
+	if farm == nil {
+		return false, nil
+	}
+
+	// does the backend exist?
+	backend, err := farm.GetBackend(backendId)
+
+	if err != nil {
+		return false, err
+	}
+
+	if backend == nil {
+		return false, nil
+	}
+
+	// delete the backend
+	return true, s.delete("farms", farmName, "backends", strconv.Itoa(backendId))
 }
 
 // CreateBackend creates a new backend on a service on a farm.
