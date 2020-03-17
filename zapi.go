@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	"log"
 )
 
 var defaultConfigOptions = &ConfigOptions{
@@ -229,6 +231,8 @@ func (s *ZapiSession) getForEntity(e interface{}, path ...string) error {
 		URL:         s.iControlPath(path),
 		ContentType: "application/json",
 	}
+
+	log.Printf("[DEBUG] %s", req)
 
 	resp, err := s.apiCall(req)
 	if err != nil {
